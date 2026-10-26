@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10264a">
+  <title>PlaceTrack | Placement Management</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="PlaceTrack home">
+        <span class="brand-mark">P</span>
+        <span><strong>PlaceTrack</strong><small>PLACEMENT PORTAL</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">▦</span> Dashboard</button>
+        <button class="nav-item" data-view="students"><span class="nav-icon">♙</span> Students</button>
+        <button class="nav-item" data-view="placements"><span class="nav-icon">▤</span> Placement records</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="api-indicator"><span class="status-dot" id="apiDot"></span><div><strong id="apiStatus">Connecting…</strong><small>Backend · localhost:3000</small></div></div>
+        <div class="sidebar-note">Placement Management System</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-sep">/</span><strong id="breadcrumbCurrent">Dashboard</strong></div>
+        <div class="topbar-right"><span class="today-label" id="todayLabel"></span><div class="avatar">PM</div></div>
+      </header>
+
+      <section class="view active" id="dashboardView">
+        <div class="page-heading">
+          <div><p class="eyebrow">OVERVIEW</p><h1>Dashboard</h1><p class="page-subtitle">A clear view of student placement progress.</p></div>
+          <button class="btn btn-primary" id="dashboardAddStudent">＋ Add student</button>
+        </div>
+        <div class="notice hidden" id="dashboardNotice" role="status"></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total students</span><span class="stat-icon navy">♙</span></div><div class="stat-value" id="statTotal">—</div><div class="stat-foot">Registered in the system</div></article>
+          <article class="stat-card"><div class="stat-top"><span>Placed students</span><span class="stat-icon green">✓</span></div><div class="stat-value" id="statPlaced">—</div><div class="stat-foot"><span class="mini-dot green-dot"></span> Placement status: PLACED</div></article>
+          <article class="stat-card"><div class="stat-top"><span>Pending students</span><span class="stat-icon amber">◷</span></div><div class="stat-value" id="statPending">—</div><div class="stat-foot"><span class="mini-dot amber-dot"></span> Placement status: PENDING</div></article>
+          <article class="stat-card"><div class="stat-top"><span>Placement records</span><span class="stat-icon blue">▤</span></div><div class="stat-value" id="statRecords">—</div><div class="stat-foot">Applications tracked</div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel preference-panel">
+            <div class="panel-heading"><div><h2>Career preferences</h2><p>Student interest breakdown</p></div><span class="panel-icon">◎</span></div>
+            <div id="preferenceBreakdown" class="preference-list"><div class="empty-state compact">Loading preferences…</div></div>
+          </section>
+          <section class="panel recent-panel">
+            <div class="panel-heading"><div><h2>Recent students</h2><p>Latest registered students</p></div><button class="text-button" data-go="students">View all →</button></div>
+            <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>CAREER PREFERENCE</th><th>STATUS</th></tr></thead><tbody id="recentStudentsBody"><tr><td colspan="3" class="table-loading">Loading students…</td></tr></tbody></table></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="studentsView">
+        <div class="page-heading"><div><p class="eyebrow">DIRECTORY</p><h1>Students</h1><p class="page-subtitle">Manage student profiles and career preferences.</p></div><button class="btn btn-primary" id="addStudentBtn">＋ Add student</button></div>
+        <div class="toolbar"><label class="search-box"><span>⌕</span><input id="studentSearch" type="search" placeholder="Search name, enrollment, email…" aria-label="Search students"></label><select id="studentStatusFilter" aria-label="Filter by placement status"><option value="">All statuses</option><option value="PENDING">Pending</option><option value="PLACED">Placed</option></select><button class="btn btn-outline" id="refreshStudents">↻ Refresh</button></div>
+        <div class="notice hidden" id="studentsNotice" role="status"></div>
+        <section class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ENROLLMENT NO.</th><th>BRANCH</th><th>CAREER PREFERENCE</th><th>STATUS</th><th class="action-col">ACTIONS</th></tr></thead><tbody id="studentsBody"><tr><td colspan="6" class="table-loading">Loading students…</td></tr></tbody></table></div><div class="table-footer"><span id="studentCount">0 students</span><span>Data from Spring Boot API</span></div></section>
+      </section>
+
+      <section class="view" id="placementsView">
+        <div class="page-heading"><div><p class="eyebrow">TRACKING</p><h1>Placement records</h1><p class="page-subtitle">Track applications, offers, roles, and packages.</p></div><button class="btn btn-primary" id="addPlacementBtn">＋ Add record</button></div>
+        <div class="toolbar"><label class="search-box"><span>⌕</span><input id="placementSearch" type="search" placeholder="Search company, role, status…" aria-label="Search placement records"></label><select id="placementStatusFilter" aria-label="Filter application status"><option value="">All application statuses</option><option value="APPLIED">Applied</option><option value="IN_PROGRESS">In progress</option><option value="OFFERED">Offered</option><option value="REJECTED">Rejected</option></select><button class="btn btn-outline" id="refreshPlacements">↻ Refresh</button></div>
+        <div class="notice hidden" id="placementsNotice" role="status"></div>
+        <section class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>COMPANY</th><th>JOB ROLE</th><th>PACKAGE</th><th>APPLICATION STATUS</th><th>OFFER DATE</th><th class="action-col">ACTIONS</th></tr></thead><tbody id="placementsBody"><tr><td colspan="7" class="table-loading">Loading placement records…</td></tr></tbody></table></div><div class="table-footer"><span id="placementCount">0 records</span><span>Offers automatically update student placement status</span></div></section>
+      </section>
+
+      <footer class="footer"><span>PlaceTrack <span class="footer-dot">·</span> Placement Management System</span><span>Spring Boot + MySQL + SOAP</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="studentModalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+      <div class="modal-heading"><div><p class="eyebrow">STUDENT PROFILE</p><h2 id="studentModalTitle">Add student</h2></div><button class="icon-button" data-close="studentModalBackdrop" aria-label="Close dialog">×</button></div>
+      <form id="studentForm">
+        <input type="hidden" id="studentId">
+        <div class="form-grid">
+          <label class="field"><span>Enrollment number <b>*</b></span><input id="enrollmentNo" required maxlength="80" placeholder="e.g. ICT2026001"></label>
+          <label class="field"><span>Full name <b>*</b></span><input id="studentName" required maxlength="120" placeholder="Student name"></label>
+          <label class="field full-field"><span>Email address <b>*</b></span><input id="studentEmail" type="email" required maxlength="180" placeholder="student@example.com"></label>
+          <label class="field"><span>Branch</span><input id="studentBranch" maxlength="80" placeholder="e.g. CSE"></label>
+          <label class="field"><span>Career preference</span><select id="careerPreference"><option value="INTERNSHIP_AND_PLACEMENT">Internship and placement</option><option value="INTERNSHIP_ONLY">Internship only</option><option value="PLACEMENT_ONLY">Placement only</option><option value="OWN_BUSINESS">Own business</option></select></label>
+          <label class="field full-field"><span>Placement status</span><select id="placementStatus"><option value="PENDING">Pending</option><option value="PLACED">Placed</option></select></label>
+        </div>
+        <div class="form-error hidden" id="studentFormError"></div>
+        <div class="modal-actions"><button type="button" class="btn btn-outline" data-close="studentModalBackdrop">Cancel</button><button type="submit" class="btn btn-primary" id="saveStudentBtn">Save student</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="placementModalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="placementModalTitle">
+      <div class="modal-heading"><div><p class="eyebrow">APPLICATION DETAILS</p><h2 id="placementModalTitle">Add placement record</h2></div><button class="icon-button" data-close="placementModalBackdrop" aria-label="Close dialog">×</button></div>
+      <form id="placementForm">
+        <div class="form-grid">
+          <label class="field full-field"><span>Student <b>*</b></span><select id="placementStudentId" required><option value="">Select a student</option></select></label>
+          <label class="field"><span>Company name <b>*</b></span><input id="companyName" required maxlength="160" placeholder="Company name"></label>
+          <label class="field"><span>Job role</span><input id="jobRole" maxlength="120" placeholder="e.g. Software Engineer"></label>
+          <label class="field"><span>Application status <b>*</b></span><select id="applicationStatus" required><option value="APPLIED">Applied</option><option value="IN_PROGRESS">In progress</option><option value="OFFERED">Offered</option><option value="REJECTED">Rejected</option></select></label>
+          <label class="field"><span>Package amount (LPA)</span><input id="packageAmount" type="number" min="0" step="0.01" placeholder="e.g. 6.5"></label>
+          <label class="field full-field"><span>Offer date</span><input id="offerDate" type="date"></label>
+        </div>
+        <p class="form-hint">Selecting “Offered” automatically changes the student's placement status to PLACED in your existing backend.</p>
+        <div class="form-error hidden" id="placementFormError"></div>
+        <div class="modal-actions"><button type="button" class="btn btn-outline" data-close="placementModalBackdrop">Cancel</button><button type="submit" class="btn btn-primary" id="savePlacementBtn">Save record</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
