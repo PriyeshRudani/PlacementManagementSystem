@@ -236,7 +236,7 @@ The screenshots document the dashboard, project running in the IDE, MySQL record
 
 <div align="center">
 
-**PlaceTrack — Placement Management System**
+**PlaceTrack - Placement Management System**
 
 Built with Java and Spring Boot.
 
